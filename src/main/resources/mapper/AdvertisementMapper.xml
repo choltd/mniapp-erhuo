@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erhuo.mapper.AdvertisementMapper">
+
+
+    <select id="banners" resultType="advertisement">
+        select *
+        from advertisement
+        where state = 1;
+    </select>
+
+    <select id="getImg" resultType="string">
+        select cover_img
+        from advertisement
+        where goods_id = #{id}
+    </select>
+    <insert id="insert">
+        insert into advertisement(ad_name, cover_img, goods_id)
+        values (#{adName}, #{coverImg}, #{goodsId})
+    </insert>
+</mapper>

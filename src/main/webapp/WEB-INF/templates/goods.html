@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Unicorn Admin</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" th:href="@{/static/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/font-awesome.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/datepicker.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/select2.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/jquery-ui.css}"/>
+    <link rel="stylesheet" th:href="@{/static/css/unicorn.css}"/>
+
+</head>
+
+<body data-color="grey" class="flat">
+<div id="wrapper">
+    <div id="header">
+        <h1><a href="./index.html"></a></h1>
+        <a id="menu-trigger" href="#"><i class="fa fa-bars"></i></a>
+    </div>
+
+    <div id="user-nav">
+        <ul class="btn-group">
+
+            <li class="btn"><a title="" href="login.html"><i class="fa fa-share"></i> <span
+                    class="text">Logout</span></a></li>
+        </ul>
+    </div>
+
+    <div id="switcher">
+        <div id="switcher-inner">
+            <h3>Theme Options</h3>
+            <h4>Colors</h4>
+            <p id="color-style">
+                <a data-color="orange" title="Orange" class="button-square orange-switcher" href="#"></a>
+                <a data-color="turquoise" title="Turquoise" class="button-square turquoise-switcher" href="#"></a>
+                <a data-color="blue" title="Blue" class="button-square blue-switcher" href="#"></a>
+                <a data-color="green" title="Green" class="button-square green-switcher" href="#"></a>
+                <a data-color="red" title="Red" class="button-square red-switcher" href="#"></a>
+                <a data-color="purple" title="Purple" class="button-square purple-switcher" href="#"></a>
+                <a href="#" data-color="grey" title="Grey" class="button-square grey-switcher"></a>
+            </p>
+
+            <h4 class="visible-lg">Layout Type</h4>
+            <p id="layout-type">
+                <a data-option="flat" class="button" href="#">Flat</a>
+                <a data-option="old" class="button" href="#">Old</a>
+            </p>
+        </div>
+        <div id="switcher-button">
+            <i class="fa fa-cogs"></i>
+        </div>
+    </div>
+
+    <div id="sidebar">
+        <div id="search">
+            <input type="text" placeholder="搜索"/>
+            <button type="submit" class="tip-right" title="Search"><i class="fa fa-search"></i></button>
+        </div>
+        <ul>
+            <li class="active"><a href="index.html"><i class="fa fa-home"></i> <span>首页</span></a></li>
+            <li class="submenu">
+                <a href="#"><i class="fa fa-shopping-cart"></i> <span>商品管理</span> <i
+                        class="arrow fa fa-chevron-right"></i></a>
+                <ul>
+                    <li><a href="/goods">商品列表</a></li>
+                    <li><a href="category.html">商品类别</a></li>
+                    <li><a href="aduit.html">商品审核</a></li>
+                </ul>
+            </li>
+            <li class="submenu">
+                <a href="#"><i class="fa fa-th-list"></i> <span>订单管理</span> <i
+                        class="arrow fa fa-chevron-right"></i></a>
+                <ul>
+                    <li><a href="order.html">订单列表</a></li>
+                </ul>
+            </li>
+        </ul>
+
+    </div>
+
+
+    <div id="content">
+        <div id="content-header">
+            <h1>商品</h1>
+
+        </div>
+        <div id="breadcrumb">
+            <a href="#" title="Go to Home" class="tip-bottom"><i class="fa fa-home"></i>首页</a>
+            <a href="javascript:void(0)">商品管理</a>
+            <a href="#" class="current">商品列表</a>
+        </div>
+        <div>
+
+
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="widget-box">
+                    <div class="widget-title">
+							<span class="icon">
+								<i class="fa fa-th-list"></i>
+							</span>
+                        <h5>商品列表</h5>
+
+                    </div>
+                    <div class="widget-content" style="min-height: 542px;">
+                        <div class="invoice-content">
+                            <div class="invoice-head">
+                                <div class="row">
+                                    <form id="goodsQuery">
+                                        <div class="col-md-3" style="padding-left: 0;">
+                                            <select name="categoryId">
+                                                <option value="0">请选择</option>
+                                                <option th:each="category:${categoryList}" th:value="${category.id}"
+                                                        th:text="${category.categoryName}"></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3"><input type="text" class="form-control" name="goodsName"
+                                                                     placeholder="商品名称"/>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <input type="text" id="dp" class=" form-control" placeholder="日期"
+                                                   name="publishTime" readonly/>
+                                        </div>
+                                        <div class="col-md-3"><input type="text" class="form-control" name="price"
+                                                                     placeholder="商品价格(范围内)"/>
+                                        </div>
+
+                                        <div class="col-md-3 col-sm-9 col-lg-10">
+                                            <select name="state">
+                                                <option value="-1">请选择</option>
+                                                <option value="0">在售</option>
+                                                <option value="1">售出</option>
+                                                <option value="2">下架</option>
+                                            </select>
+                                        </div>
+
+                                        <input type="button" class="btn btn-inverse" style="margin-left: 20px;"
+                                               id="query" value="查询"/>
+                                    </form>
+
+                                </div>
+                                <div style="margin-top: 5px;">
+                                    <button class="btn btn-dark-red">批量下架</button>
+                                </div>
+                            </div>
+                            <div>
+                                <table class="table table-bordered table-striped table-hover with-check" id="listBody">
+                                    <thead id="title">
+                                    <tr>
+                                        <th><input type="checkbox" name="checkall"/></th>
+                                        <th>商品类别</th>
+                                        <th>商品名称</th>
+                                        <th>商品描述</th>
+                                        <th>商品价格</th>
+                                        <th>上架时间</th>
+                                        <th>商品状态</th>
+                                        <th>操作</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tbody id="list" th:insert="::listBody">
+                                    <tr th:each="goods:${goodsList}" th:fragment="listBody">
+                                        <td><input type="checkbox" name="ck"/></td>
+                                        <td th:text="${goods.categoryName}">
+                                            二手手机
+                                        </td>
+                                        <td th:text="${goods.goodsName}">
+                                            手机
+                                        </td>
+                                        <td th:text="${goods.description}">
+                                            95新，无划痕，无磕碰
+                                        </td>
+                                        <td th:text="${goods.price}">
+                                            ￥79
+                                        </td>
+                                        <td th:text="${#dates.format(goods.publishTime,'yyyy-MM-dd HH:mm')}">
+                                            2022-05-22 19:30
+                                        </td>
+                                        <td th:text="${goods.state} == 0 ? '在售':(${goods.state} == 1 ? '售出':'下架')">
+                                            在售
+                                        </td>
+                                        <td>
+                                            <input type="button" th:name="${goods.id}" value="下架"
+                                                   class="btn btn-danger"/>
+                                        </td>
+                                    </tr>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div style="position: relative;left: 35%;" id="page">
+                                <nav aria-label="Page navigation">
+                                    <ul class="pagination pagination-lg">
+                                        <li id="previous">
+                                            <a href="javascript:void(0)" onclick="topPage()" aria-label="Previous">
+                                                <span aria-hidden="true">&laquo;</span>
+                                            </a>
+                                        </li>
+                                        <li id="next">
+                                            <a href="javascript:void(0)" onclick="bottomPage()" aria-label="Next">
+                                                <span aria-hidden="true">&raquo;</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script th:src="@{/static/js/jquery.min.js}"></script>
+<script th:src="@{/static/js/jquery-ui.custom.js}"></script>
+<script th:src="@{/static/js/bootstrap.min.js}"></script>
+<script th:src="@{/static/js/bootstrap-datepicker.js}"></script>
+<script th:src="@{/static/js/bootstrap-datepicker.zh-CN.js}"></script>
+<script th:src="@{/static/js/jquery.icheck.min.js}"></script>
+<script th:src="@{/static/js/select2.min.js}"></script>
+<script th:src="@{/static/js/jquery.nicescroll.min.js}"></script>
+<script th:src="@{/static/js/unicorn.js}"></script>
+<script th:src="@{/static/js/unicorn.form_common.js}"></script>
+<script th:inline="javascript">
+
+
+    let checkall = $("input[name=checkall]")
+    let check = $("input[name=ck]")
+    let $unShelve = $("#list input:button")
+    let $list = $("#list")
+    let $page = $("#page")
+    let page
+
+    $(document).ready(function () {
+        console.log([[${total}]])
+        $("#dp").datepicker({
+            language: 'zh-CN', //语言
+            autoclose: true, //选择后自动关闭
+            todayBtn: 'linked',
+            clearBtn: true,//清除按钮
+            format: "yyyy-mm-dd"//日期格式
+        })
+
+        $("#title").on("click", checkall, function () {
+            check.prop("checked", check.length !== $("input[name=ck]:checked").length);
+        })
+
+        $list.on("click", check, function () {
+            checkall.prop("checked", check.length === $("input[name=ck]:checked").length);
+        });
+
+        let total = [[${total}]];
+
+        $("#page ul #previous").after(pagination(total))
+        $page.trigger("create")
+
+        page = [[${page}]];//page页码
+        let selector = document.querySelectorAll("ul.pagination>li");
+        for (let i = 0; i < selector.length; i++) {
+            if (page.toString() === selector[i].getAttribute("id")) {
+                selector[i].setAttribute("class", "active")
+            }
+        }
+        if (page === "page1") {
+            $("#previous").addClass("disabled")
+        }
+        if ($("#next").prev().attr("class") === "active") {
+            $("#next").addClass("disabled")
+        }
+
+        $("#query").on("click", function () {
+            let goods = serializeNotNull($("#goodsQuery").serialize());
+            checkall.prop("checked", false)
+            $.get('/queryBy', goods, function (res) {
+                $list.html(res)
+            })
+            $.get('/queryByTotal', goods, function (data) {
+                $("#page ul li").not(":first").not(":last").remove()
+                $("#page ul #previous").after(pagination(data))
+            })
+
+        })
+        $unShelve.on('click', function () {
+            let id = this.name;
+            $.get('/unShelve', {goodsId: id}, function (data) {
+                if (data) {
+                    console.log(data)
+                }
+            })
+
+        })
+    })
+
+    function pagination(total) {
+        let html = ""
+        for (let i = 0; i < total / 5; i++) {
+            let limit = i * 5
+            let num = i + 1
+            html += "<li id='page" + num + "'><a href='/goods/" + num + "/" + limit + "'>" + num + "</a></li>"
+        }
+        return html
+    }
+
+    function serializeNotNull(setStr) {
+        return setStr.split("&").filter(str => !str.endsWith("=")).join("&")
+    }
+
+    function topPage() {
+        let num = parseInt(page.slice(-1));
+        window.location.href = "/goods/" + (num - 1) + "/" + (num - 2) * 5
+
+    }
+
+    function bottomPage() {
+        let num = parseInt(page.slice(-1));
+        window.location.href = "/goods/" + (num + 1) + "/" + num * 5
+    }
+</script>
+</body>
+
+</html>

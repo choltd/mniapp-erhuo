@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erhuo.mapper.GoodsMapper">
+
+    <select id="goodsList" resultType="com.erhuo.vo.GoodsVO">
+        select g.id,
+               g.goods_name,
+               g.price,
+               g.real_price,
+               g.state,
+               g.publish_time,
+               g.update_time,
+               u.nickName,
+               c.category_name,
+               g.description
+        from goods g
+                 join user u on g.seller_user_id = u.id
+                 join category c on g.category_id = c.id
+        order by g.state
+            limit #{offset}, 5
+
+    </select>
+
+    <select id="goodsTotal" resultType="int">
+        select count(*)
+        from goods
+    </select>
+
+    <select id="goodsListQuery" resultType="com.erhuo.vo.GoodsVO">
+        select g.id,
+        g.goods_name,
+        g.price,
+        g.real_price,
+        g.state,
+        g.publish_time,
+        g.update_time,
+        u.nickName,
+        c.category_name,
+        g.description
+        from goods g
+        join user u on g.seller_user_id = u.id
+        join category c on g.category_id = c.id
+        <where>
+            <if test="goods.categoryId != null and goods.categoryId != '' and goods.categoryId != 0">
+                g.category_id = #{goods.categoryId}
+            </if>
+            <if test="goods.goodsName != null and goods.category != ''">
+                g.goods_name like '%' #{goods.goodsName} '%'
+            </if>
+            <if test="goods.publishTime != null and goods.publishTime != ''">
+                g.publish_time = #{goods.publishTime}
+            </if>
+            <if test="goods.price != null and goods.price != ''">
+                g.price &lt;= #{goods.price}
+            </if>
+            <if test="goods.state != null and goods.state != '' and goods.state != -1">
+                g.state = #{goods.state}
+            </if>
+        </where>
+        order by g.state
+        limit #{offset}, 5
+    </select>
+
+    <select id="goodsQueryTotal" resultType="int">
+        select count(*) from goods g
+        <where>
+            <if test="categoryId != null and categoryId != '' and categoryId != 0">
+                g.category_id = #{categoryId}
+            </if>
+            <if test="goodsName != null and category != ''">
+                g.goods_name like '%' #{goodsName} '%'
+            </if>
+            <if test="publishTime != null and publishTime != ''">
+                g.publish_time = #{publishTime}
+            </if>
+            <if test="price != null and price != ''">
+                g.price &lt;= #{price}
+            </if>
+            <if test="state != null and state != '' and state != -1">
+                g.state = #{state}
+            </if>
+        </where>
+    </select>
+
+    <select id="newGoods" resultType="com.erhuo.vo.GoodsVO">
+        select g.id,
+               g.goods_name,
+               g.price,
+               g.real_price,
+               g.description,
+               gi.collected,
+               gi.browsed
+        from goods g
+                 join goods_info gi on g.id = gi.goods_id
+        where g.real_price &gt; 0
+        order by g.publish_time desc
+    </select>
+
+    <select id="freeGoods" resultType="com.erhuo.vo.GoodsVO">
+        select g.id,
+               g.goods_name,
+               g.price,
+               g.real_price,
+               g.description,
+               gi.collected,
+               gi.browsed
+        from goods g
+                 join goods_info gi on g.id = gi.goods_id
+        where real_price = 0
+        order by g.publish_time desc
+    </select>
+
+    <select id="detail" resultType="com.erhuo.vo.GoodsVO">
+        select g.id,
+               g.goods_name,
+               g.price,
+               g.real_price,
+               g.state,
+               g.publish_time,
+               g.update_time,
+               u.nickName,
+               u.avatar_url,
+               u.openid,
+               c.category_name,
+               g.description,
+               gi.collected,
+               gi.browsed
+        from goods g
+                 join user u on g.seller_user_id = u.id
+                 join category c on g.category_id = c.id
+                 join goods_info gi on g.id = gi.goods_id
+        where g.id = #{id}
+    </select>
+    <select id="released" resultType="com.erhuo.vo.GoodsVO">
+        select g.id,
+               g.goods_name,
+               g.price,
+               g.real_price,
+               g.state,
+               g.publish_time,
+               g.update_time,
+               u.nickName,
+               c.category_name,
+               g.description,
+               gi.collected,
+               gi.browsed
+        from goods g
+                 join user u on g.seller_user_id = u.id
+                 join category c on g.category_id = c.id
+                 join goods_info gi on g.id = gi.goods_id
+        where u.openid = #{openid}
+        order by g.publish_time desc
+    </select>
+
+    <select id="sold" resultType="com.erhuo.vo.GoodsVO">
+        select g.id,
+               g.goods_name,
+               g.price,
+               g.real_price,
+               g.state,
+               g.publish_time,
+               g.update_time,
+               u.nickName,
+               g.description,
+               o.create_time,
+               gi.collected,
+               gi.browsed
+        from goods g
+                 join user u on g.seller_user_id = u.id
+                 join `order` o on g.id = o.goods_id
+                 join goods_info gi on g.id = gi.goods_id
+        where u.openid = #{openid}
+          and o.state = 1
+        order by o.create_time desc
+    </select>
+
+    <select id="bought" resultType="com.erhuo.vo.GoodsVO">
+        select g.id,
+               g.goods_name,
+               g.price,
+               g.real_price,
+               g.state,
+               g.publish_time,
+               g.update_time,
+               u.nickName,
+               g.description,
+               gi.collected,
+               gi.browsed
+        from `order` o
+                 join user u on o.buy_user_id = u.id
+                 join goods g on g.id = o.goods_id
+                 join goods_info gi on g.id = gi.goods_id
+        where u.openid = #{openid}
+          and o.state = 1
+        order by o.create_time desc
+    </select>
+
+    <select id="favorite" resultType="com.erhuo.vo.GoodsVO">
+        select g.id,
+               g.goods_name,
+               g.price,
+               g.real_price,
+               g.state,
+               g.publish_time,
+               g.update_time,
+               u.nickName,
+               g.description,
+               gi.collected,
+               gi.browsed
+        from user_favorites uf
+                 join user u on uf.user_id = u.id
+                 join goods g on g.id = uf.goods_id
+                 join goods_info gi on g.id = gi.goods_id
+        where u.openid = #{openid}
+        order by uf.favorite_time desc
+    </select>
+
+    <update id="unShelve">
+        update goods
+        set state = 2
+        where id = #{goodsId}
+    </update>
+
+    <insert id="insertBackId" useGeneratedKeys="true" keyProperty="id">
+        insert into goods(seller_user_id,
+                          category_id,
+                          goods_name,
+                          price,
+                          real_price,
+                          description,
+                          address,
+                          phone)
+        values (#{sellerUserId}, #{categoryId}, #{goodsName}, #{price}, #{realPrice}, #{description}, #{address},
+                #{phone})
+    </insert>
+
+    <select id="selectByPrimaryKey" resultType="goods">
+        select *
+        from goods
+        where id = #{id}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from goods
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <select id="getUserId" resultType="String">
+        select seller_user_id
+        from goods
+        where id = #{goodsId}
+    </select>
+    <select id="getUser4chat" resultType="com.erhuo.vo.ChatVO">
+        select u.id sellerUserId, u.avatar_url sellerAvatar
+        from user u
+                 join goods g on g.seller_user_id = u.id
+        where g.id = #{goodsId}
+    </select>
+
+
+</mapper>

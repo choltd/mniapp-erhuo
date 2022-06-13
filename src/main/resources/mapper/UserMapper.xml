@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erhuo.mapper.UserMapper">
+
+
+    <select id="userInfo" resultType="user">
+        select *
+        from user
+        where openid = #{openid};
+    </select>
+
+    <select id="queryId" resultType="string">
+        select id
+        from user
+        where openid = #{openid}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+        delete
+        from user
+        where id = #{id,jdbcType=INTEGER}
+    </delete>
+
+    <insert id="insert" parameterType="com.erhuo.pojo.User">
+        insert into user (openid, nickName, language,
+                          gender, avatar_url, country,
+                          province, city,
+                          phone, is_identity, register_time)
+        values (#{openid}, #{nickName}, #{language},
+                #{gender}, #{avatarUrl}, #{country},
+                #{province}, #{city},
+                #{phone}, #{isIdentity}, #{registerTime})
+    </insert>
+
+    <select id="getAvatar" resultType="string">
+        select avatar_url
+        from user
+        where id = #{userId}
+    </select>
+    <select id="getUer4chat" resultType="user">
+        select u.id, u.avatar_url
+        from user u
+                 join wx_access_token w on u.id = w.user_id
+        where w.token = #{token};
+    </select>
+
+</mapper>

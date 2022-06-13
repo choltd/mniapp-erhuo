@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erhuo.mapper.WxAccessTokenMapper">
+
+
+  <insert id="insertSelective" parameterType="com.erhuo.pojo.WxAccessToken">
+    insert into wx_access_token(token,expires,user_id) values (#{token},#{expires},#{userId})
+  </insert>
+
+  <select id="getUserIdByToken" resultType="int">
+    select user_id from wx_access_token where token = #{token}
+  </select>
+
+</mapper>

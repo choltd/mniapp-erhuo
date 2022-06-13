@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erhuo.mapper.ChatMapper">
+
+
+    <insert id="insert" parameterType="com.erhuo.pojo.Chat">
+        insert into chat (seller_user_id, buy_user_id, goods_id, content)
+        values (#{sellerUserId}, #{buyUserId}, #{goodsId}, #{content})
+    </insert>
+
+    <select id="sellChatList" resultType="com.erhuo.vo.ChatVO">
+        select c.buy_user_id         buyUserId,
+               c.seller_user_id      sellerUserId,
+               u.avatar_url          sellerAvatar,
+               c.content             content,
+               c.send_time           sendTime,
+               g.id                  goodsId,
+               g.goods_name          goodsName,
+               u.nickName            nickName,
+               (select a.cover_img
+                from advertisement a
+                where a.goods_id = g.id
+                GROUP BY a.goods_id) goodsImage
+        from chat c
+                 join wx_access_token w on w.user_id = c.seller_user_id
+                 join user u on u.id = c.buy_user_id
+                 join goods g on g.id = c.goods_id
+        where w.token = #{token}
+        group by c.buy_user_id
+        order by c.send_time
+    </select>
+    <select id="buyChatList" resultType="com.erhuo.vo.ChatVO">
+        select c.buy_user_id         buyUserId,
+               c.seller_user_id      sellerUserId,
+               u.avatar_url          sellerAvatar,
+               c.content             content,
+               c.send_time           sendTime,
+               g.id                  goodsId,
+               g.goods_name          goodsName,
+               u.nickName            nickName,
+               (select a.cover_img
+                from advertisement a
+                where a.goods_id = g.id
+                GROUP BY a.goods_id) goodsImage
+        from chat c
+                 join wx_access_token w on w.user_id = c.buy_user_id
+                 join user u on u.id = c.seller_user_id
+                 join goods g on g.id = c.goods_id
+        where w.token = #{token}
+        group by c.seller_user_id
+        order by c.send_time
+    </select>
+
+</mapper>

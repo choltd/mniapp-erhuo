@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erhuo.mapper.GoodsInfoMapper">
+
+    <select id="selectByGoodsId" resultType="goodsInfo">
+        select *
+        from goods_info
+        where goods_id = #{goodsId}
+    </select>
+
+    <update id="collect">
+        update goods_info
+        set collected=collected + 1,
+            browsed=browsed + 1
+        where goods_id = #{id}
+    </update>
+
+    <update id="browse">
+        update goods_info
+        set browsed=browsed + 1
+        where goods_id = #{id}
+    </update>
+
+    <update id="unCollect">
+        update goods_info
+        set collected=collected - 1
+        where goods_id = #{id}
+    </update>
+</mapper>
